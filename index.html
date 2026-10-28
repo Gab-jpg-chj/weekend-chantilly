@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week-end à Chantilly</title>
+<style>
+  :root { --bg:#f6f1e7; --card:#fffdf8; --ink:#2b2a26; --muted:#7a7568; --accent:#2f5d3a; --accent2:#c9a24b; --line:#e4dccb; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1b1d1a; --card:#252822; --ink:#f0ebdd; --muted:#a09b8c; --accent:#7fb78a; --accent2:#d8b562; --line:#383c34; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:32px 16px 64px; }
+  h1 { font:700 clamp(2rem,7vw,3.2rem)/1.1 Georgia,serif; text-align:center; margin:8px 0 4px; }
+  .sub { text-align:center; color:var(--muted); margin-bottom:28px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; margin-bottom:18px; }
+  h2 { font-size:1.1rem; margin:0 0 12px; }
+  label.f { display:block; font-weight:600; margin-bottom:6px; }
+  input[type=text], select, textarea { width:100%; padding:10px 12px; font:inherit; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:8px; }
+  textarea { min-height:80px; resize:vertical; }
+  .days { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+  @media (max-width:560px){ .days { grid-template-columns:repeat(3,1fr); } }
+  .day { border:1px solid var(--line); border-radius:12px; background:var(--card); padding:10px 6px; text-align:center; }
+  .day b { display:block; font-size:1.5rem; font-family:Georgia,serif; }
+  .day small { color:var(--muted); display:block; }
+  .day ul { list-style:none; padding:0; margin:8px 0 0; font-size:.78rem; text-align:left; }
+  .day li { padding:2px 0; border-top:1px dashed var(--line); }
+  .day .n { font-weight:700; color:var(--accent); margin-top:6px; font-size:.8rem; }
+  .pick { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:10px; }
+  @media (max-width:560px){ .pick { grid-template-columns:repeat(3,1fr); } }
+  .pick button { padding:10px 4px; border:1px solid var(--line); background:var(--bg); color:var(--ink); border-radius:10px; font:inherit; cursor:pointer; }
+  .pick button.on { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:560px){ .row { grid-template-columns:1fr; } }
+  .opt { display:flex; gap:10px; align-items:flex-start; padding:8px 0; cursor:pointer; }
+  .opt input { margin-top:5px; accent-color:var(--accent); }
+  .go { width:100%; padding:14px; font:700 1.05rem system-ui,sans-serif; border:0; border-radius:10px; background:var(--accent); color:#fff; cursor:pointer; }
+  .go:disabled { opacity:.6; }
+  #msg { text-align:center; margin-top:10px; min-height:1.4em; }
+  .err { color:#c0392b; }
+  .ok { color:var(--accent); }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; }
+  td, th { text-align:left; padding:8px 6px; border-top:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; border-top:0; }
+  .hint { color:var(--muted); font-size:.85rem; margin:4px 0 0; }
+  body { background:radial-gradient(circle at 10% 0%,#ffd6e7 0,transparent 40%),radial-gradient(circle at 90% 10%,#ffe9a8 0,transparent 40%),var(--bg); }
+  @media (prefers-color-scheme: dark) { body { background:var(--bg); } }
+  .sticker { display:table; margin:0 auto 10px; background:#ffe45c; color:#2b2a26; font-weight:800; padding:6px 14px; border-radius:999px; transform:rotate(-3deg); box-shadow:3px 3px 0 #2b2a26; font-size:.9rem; }
+  h1 { font-family:"Arial Black",Impact,system-ui,sans-serif; text-transform:uppercase; letter-spacing:-.5px; }
+  h1 span { background:linear-gradient(90deg,#e8366f,#ff9a3c); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  h1 i { font-style:normal; display:inline-block; animation:wob 1.6s ease-in-out infinite; }
+  @keyframes wob { 0%,100% { transform:rotate(-12deg); } 50% { transform:rotate(12deg) scale(1.15); } }
+  .card { border:2px solid var(--ink); box-shadow:5px 5px 0 var(--ink); }
+  .day { border:2px solid var(--ink); box-shadow:3px 3px 0 var(--ink); transition:transform .2s; }
+  .day:nth-child(odd) { transform:rotate(-2deg); background:#fff0f5; color:#2b2a26; }
+  .day:nth-child(even) { transform:rotate(2deg); background:#fff8d9; color:#2b2a26; }
+  .day:hover { transform:rotate(0) scale(1.06); }
+  .day small { color:#6b6659; }
+  .day .note { margin:10px 0 0; padding:6px; font-size:.75rem; line-height:1.3; text-align:left; background:#fff; border:2px dashed #e8366f; border-radius:8px; }
+  .pick button.on { transform:scale(1.07); box-shadow:2px 2px 0 var(--ink); }
+  .go { background:linear-gradient(90deg,#e8366f,#ff9a3c); box-shadow:4px 4px 0 var(--ink); }
+  .go:hover { transform:translate(-1px,-1px) rotate(-1deg); }
+</style>
+</head>
+<body>
+<main>
+  <div class="sticker">🏰 Crème fouettée non incluse (quoique) 🍦</div>
+  <h1>Week-end à <span>Chantilly</span> <i>🥂🐎</i></h1>
+  <p class="sub">Du 7 au 11 novembre · Dis-nous quand tu débarques, qu'on prépare le château (et la cave) 🎉</p>
+
+  <section class="days" id="days" aria-label="Disponibilités par jour"></section>
+  <p class="hint" style="text-align:center;margin:8px 0 22px">Sous chaque jour : la bande de joyeux lurons dispo 🕺</p>
+
+  <form class="card" id="form">
+    <h2>Ma réponse ✍️</h2>
+    <label class="f" for="name">Mon prénom</label>
+    <input type="text" id="name" maxlength="60" required autocomplete="off" placeholder="Ex : Gabriel">
+    <p class="hint">Pour modifier ta réponse plus tard, retape exactement le même prénom : tes choix se rechargent.</p>
+
+    <h2 style="margin-top:20px">Date d'arrivée</h2>
+    <div class="pick" id="arrDays"></div>
+    <label class="f" for="arrHour">Heure d'arrivée</label>
+    <select id="arrHour"></select>
+
+    <h2 style="margin-top:20px">Date de départ</h2>
+    <div class="pick" id="depDays"></div>
+    <label class="f" for="depHour">Heure de départ</label>
+    <select id="depHour"></select>
+
+    <h2 style="margin-top:20px">Qu'attendez-vous de ce week-end ?</h2>
+    <p class="hint" style="margin:0 0 4px">Plusieurs réponses possibles.</p>
+    <div id="expect"></div>
+
+    <h2 style="margin-top:20px">Une idée pour le week-end ?</h2>
+    <textarea id="idea" maxlength="1000" placeholder="Ce que tu attends concrètement, une activité, une envie…"></textarea>
+
+    <h2 style="margin-top:20px">Quel repas aimeriez-vous déguster ? 🍽️</h2>
+    <p class="hint" style="margin:0 0 8px">Au menu de la maison : <b>dégustation à volonté de rince-cochon</b> 🐷🍺 (le monastère n'a pas validé).</p>
+    <textarea id="meal" maxlength="500" placeholder="Raclette, barbecue, gastro… ou juste du rince-cochon à volonté 🐖"></textarea>
+
+    <button class="go" id="send" type="submit" style="margin-top:20px">Enregistrer ma réponse</button>
+    <div id="msg"></div>
+  </form>
+
+  <section class="card">
+    <h2>Qui vient, et que veulent-ils ?</h2>
+    <div style="overflow-x:auto"><table id="table"></table></div>
+  </section>
+</main>
+
+<script>
+const SB_URL = "https://sqoleuqcoctoklkciurp.supabase.co";
+const SB_KEY = "sb_publishable_1B7ryeWAeJp4-tHKySZyBQ_DqCnKNA9";
+const API = SB_URL + "/rest/v1/chantilly_rsvp";
+const H = { apikey: SB_KEY, Authorization: "Bearer " + SB_KEY, "Content-Type": "application/json" };
+
+const DAYS = [
+  ["2026-11-07","Samedi",7], ["2026-11-08","Dimanche",8], ["2026-11-09","Lundi",9],
+  ["2026-11-10","Mardi",10], ["2026-11-11","Mercredi",11]
+];
+const EXPECT = [
+  "Un maximum de kiff",
+  "Jouer au golf",
+  "Visiter le château de Chantilly",
+  "Aller me recueillir dans l'église et le monastère et rester cloîtré 24 heures afin de prier pour la France",
+  "Un week-end cochonnesque au coin du feu 🐷🔥"
+];
+const NOTES = {
+  "2026-11-07": "⛳ Golf prévu pour Raph, Gab et Zboubi Junior (le matin). Le reste de la bande arrive en début d'aprèm.",
+  "2026-11-08": "🏃 Sortie running longue de prévue : 23 km en forêt.",
+  "2026-11-11": "🏌️ Gab a une compète de golf ce jour-là."
+};
+const hh = h => h + "h";
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dayLabel = d => { const x = DAYS.find(x => x[0] === d); return x ? x[1].slice(0,3) + " " + x[2] : ""; };
+
+let arr = null, dep = null, rows = [];
+const $ = id => document.getElementById(id);
+
+function hourOptions(sel, val) {
+  sel.innerHTML = '<option value="">—</option>' + Array.from({length:24}, (_, h) => `<option value="${h}">${hh(h)}</option>`).join("");
+  sel.value = val ?? "";
+}
+function dayButtons(el, current, onPick) {
+  el.innerHTML = "";
+  DAYS.forEach(([d, name, n]) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = d === current ? "on" : "";
+    b.innerHTML = `${name.slice(0,3)}.<br><b>${n}</b> nov.`;
+    b.onclick = () => onPick(d);
+    el.appendChild(b);
+  });
+}
+function renderPickers() {
+  dayButtons($("arrDays"), arr, d => { arr = d; if (dep && dep < arr) dep = arr; renderPickers(); });
+  dayButtons($("depDays"), dep, d => { dep = d; if (arr && arr > dep) arr = dep; renderPickers(); });
+}
+function renderExpect(checked = []) {
+  $("expect").innerHTML = EXPECT.map((t, i) =>
+    `<label class="opt"><input type="checkbox" value="${esc(t)}" ${checked.includes(t) ? "checked" : ""}><span>${i + 1}. ${esc(t)}</span></label>`).join("");
+}
+function renderDays() {
+  $("days").innerHTML = DAYS.map(([d, name, n]) => {
+    const here = rows.filter(r => r.arrival_day && r.departure_day && r.arrival_day <= d && d <= r.departure_day);
+    const li = here.map(r => {
+      let note = "";
+      if (r.arrival_day === d && r.arrival_hour != null) note = " dès " + hh(r.arrival_hour);
+      if (r.departure_day === d && r.departure_hour != null) note += (note ? ", " : " ") + "jusqu'à " + hh(r.departure_hour);
+      return `<li>${esc(r.name)}<small>${note}</small></li>`;
+    }).join("");
+    const crowd = `<div class="n">${here.length} dispo</div><ul>${li}</ul>`;
+    return `<div class="day"><small>${name}</small><b>${n}</b><small>novembre</small>${crowd}${NOTES[d] ?`<p class="note">${NOTES[d]}</p>` : ""}</div>`;
+  }).join("");
+}
+function renderTable() {
+  if (!rows.length) { $("table").innerHTML = "<tr><td>Personne pour l'instant, sois le premier !</td></tr>"; return; }
+  $("table").innerHTML = "<tr><th>Qui</th><th>Quand</th><th>Attentes, idée, repas</th></tr>" + rows.map(r => {
+    const when = r.arrival_day ? `${dayLabel(r.arrival_day)} ${r.arrival_hour != null ? hh(r.arrival_hour) : ""} → ${dayLabel(r.departure_day)} ${r.departure_hour != null ? hh(r.departure_hour) : ""}` : "—";
+    const ex = (r.expectations || []).map(e => "• " + esc(e)).join("<br>");
+    const extra = [r.idea ? "💡 " + esc(r.idea) : "", r.meal ? "🍽️ " + esc(r.meal) : ""].filter(Boolean).join("<br>");
+    return `<tr><td><b>${esc(r.name)}</b></td><td>${when}</td><td>${ex}${ex && extra ? "<br>" : ""}${extra}</td></tr>`;
+  }).join("");
+}
+async function load() {
+  try {
+    const res = await fetch(API + "?select=*&order=updated_at.asc", { headers: H });
+    if (!res.ok) throw new Error(res.status);
+    rows = await res.json();
+  } catch (e) { $("msg").innerHTML = '<span class="err">Impossible de charger les réponses.</span>'; }
+  renderDays(); renderTable();
+}
+function fillFrom(r) {
+  arr = r.arrival_day; dep = r.departure_day;
+  hourOptions($("arrHour"), r.arrival_hour); hourOptions($("depHour"), r.departure_hour);
+  $("idea").value = r.idea || ""; $("meal").value = r.meal || "";
+  renderExpect(r.expectations || []); renderPickers();
+}
+$("name").addEventListener("change", () => {
+  const n = $("name").value.trim().toLowerCase();
+  const r = rows.find(r => r.name.toLowerCase() === n);
+  if (r) { $("name").value = r.name; fillFrom(r); $("msg").innerHTML = '<span class="ok">Réponse retrouvée, tu peux la modifier.</span>'; }
+});
+$("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const msg = $("msg"), name = $("name").value.trim();
+  if (!name) return;
+  if (!arr || !dep || $("arrHour").value === "" || $("depHour").value === "") {
+    msg.innerHTML = '<span class="err">Choisis un jour et une heure pour l\'arrivée et le départ.</span>'; return;
+  }
+  const ah = +$("arrHour").value, dh = +$("depHour").value;
+  if (arr === dep && dh <= ah) { msg.innerHTML = '<span class="err">Le départ doit être après l\'arrivée.</span>'; return; }
+  const existing = rows.find(r => r.name.toLowerCase() === name.toLowerCase());
+  const body = {
+    name: existing ? existing.name : name,
+    arrival_day: arr, arrival_hour: ah, departure_day: dep, departure_hour: dh,
+    expectations: [...document.querySelectorAll("#expect input:checked")].map(i => i.value),
+    idea: $("idea").value.trim() || null, meal: $("meal").value.trim() || null,
+    updated_at: new Date().toISOString()
+  };
+  $("send").disabled = true; msg.textContent = "Envoi…";
+  try {
+    const res = await fetch(API + "?on_conflict=name", { method: "POST", headers: { ...H, Prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify(body) });
+    if (!res.ok) throw new Error(res.status);
+    msg.innerHTML = '<span class="ok">C\'est enregistré, merci ! 🎉</span>';
+    await load();
+  } catch (err) { msg.innerHTML = '<span class="err">Erreur à l\'enregistrement, réessaie.</span>'; }
+  $("send").disabled = false;
+});
+
+hourOptions($("arrHour")); hourOptions($("depHour")); renderExpect(); renderPickers(); renderDays(); load();
+</script>
+</body>
+</html>
