@@ -164,13 +164,13 @@ function renderDays() {
   $("days").innerHTML = DAYS.map(([d, name, n]) => {
     const here = rows.filter(r => r.arrival_day && r.departure_day && r.arrival_day <= d && d <= r.departure_day);
     const li = here.map(r => {
-      let note = "";
-      if (r.arrival_day === d && r.arrival_hour != null) note = " dès " + hh(r.arrival_hour);
-      if (r.departure_day === d && r.departure_hour != null) note += (note ? ", " : " ") + "jusqu'à " + hh(r.departure_hour);
-      return `<li>${esc(r.name)}<small>${note}</small></li>`;
+      const parts = [];
+      if (r.arrival_day === d && r.arrival_hour != null) parts.push(hh(r.arrival_hour));
+      if (r.departure_day === d && r.departure_hour != null) parts.push("part " + hh(r.departure_hour));
+      return `<li>${esc(r.name)}${parts.length ? ` <small>(${parts.join(", ")})</small>` : ""}</li>`;
     }).join("");
     const crowd = `<div class="n">${here.length} dispo</div><ul>${li}</ul>`;
-    return `<div class="day"><small>${name}</small><b>${n}</b><small>novembre</small>${crowd}${NOTES[d] ?`<p class="note">${NOTES[d]}</p>` : ""}</div>`;
+    return `<div class="day"><small>${name}</small><b>${n}</b><small>novembre</small>${NOTES[d] ? `<p class="note">${NOTES[d]}</p>` : ""}${crowd}</div>`;
   }).join("");
 }
 function renderTable() {
